@@ -4,7 +4,7 @@ Finger joint library for creating fingered joints between faces
 */
 
 xDim = 168;
-yDim = 207;
+yDim = 209;
 zDim = 309;
 
 material = 5;
@@ -91,7 +91,7 @@ module outsideCuts(length = 100, finger = 10, material = 5, center = false) {
   uDiv = maxDiv%2==0 ? maxDiv-3 : maxDiv-2;
   
   // number of "female cuts"
-  numCuts = floor(uDiv/2);
+  numCuts = floor(uDiv/2)+1;
 
   //length of cut at either end
   endCut = (length-uDiv*finger)/2;
@@ -101,6 +101,9 @@ module outsideCuts(length = 100, finger = 10, material = 5, center = false) {
   xTrans = center==false ? (length-(numCuts*2+1)*finger)/2 : 
                             -(numCuts*2+1)*finger/2-endCut;
   yTrans = center==false ? 0 : -material/2;
+
+//need 11 cuts
+
 
 
 
