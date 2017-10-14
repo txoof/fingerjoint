@@ -3,48 +3,44 @@ Finger joint library for creating fingered joints between faces
 
 */
 
-xDim = 168;
-yDim = 209;
-zDim = 309;
+xDim = 100;
+yDim = 100;
+zDim = 100;
 
 material = 5;
+finger = 8;
 
-module faceXY() {
-  difference() {
-    square([xDim, yDim], center = true);
-    // add finger joints that fall completely within edge at +/- Y edge 
-    for (i=[-1,1]) {
-      translate([0, i*yDim/2+i*-material/2])
-        insideCuts(length = xDim, center = true, material = material);
-    }
+module faceXY(center = false) {
+  
+  xTrans = center==true ? 0 : xDim/2;
+  yTrans = center==true ? 0 : yDim/2;
 
-    // add finger joints that fall completely within edge at +/- X edge 
-    for (i=[-1,1]) {
-      translate([i*xDim/2+i*-material/2, 0])
-        rotate([0, 0, 90])
-        insideCuts(length = yDim, center = true, material = material);
+
+  translate([xTrans, yTrans, 0]) {
+    difference() {
+
+      // +/- X Edges
+      square([xDim, yDim], center = true);
+      for(i=[-1,1]) {
+        translate([0, i*yDim/2+i*-material/2, 0])
+          #insideCuts(length = xDim, finger = finger, material = material, center = true);
+      }
+
+      // +/- Y Edges
+      for(i=[-1,1]) {
+        translate([i*xDim/2+i*-material/2, 0, 0])
+          rotate([0, 0, 90])
+          #insideCuts(length = xDim, finger = finger, material = material, center = true);
+      }  
     }
-    
   }
 }
 
-module faceYZ() {
+module faceYZ(center = false) {
   difference() {
-    square([zDim, yDim], center = true);
-
-    for (i=[-1,1]) {
-      translate([0, i*yDim/2-i*material/2])
-        insideCuts(length = zDim, center = true, material = material);
-    }
-
-    for (i=[-1,1]) {
-      translate([i*zDim/2-i*material/2, 0, 0])
-        rotate([0, 0, 90])
-        #outsideCuts(length = yDim, center = true, material = material);
-    }
-
   }
 }
+
 
 
 2Dlayout();
@@ -52,15 +48,15 @@ module faceYZ() {
 module 2Dlayout() {
   //bottom of box (-XY face)
   translate()
-    faceXY();
+    faceXY(center = true);
   
   //right side of box (+YZ face)
-  translate([xDim/2+zDim/2+material, 0, 0])
-    faceYZ();
+//  translate([xDim/2+zDim/2+material, 0, 0])
+//    faceYZ();
 }
 
 
-module insideCuts(length = 100, finger = 10, material = 5, center = false) {
+module insideCuts(length = 100, finger = 8, material = 5, center = false) {
   //maximum possible divisions for this length
   maxDiv = floor(length/finger);
   //number of usable divisions that fall completely within the edge
@@ -69,20 +65,21 @@ module insideCuts(length = 100, finger = 10, material = 5, center = false) {
   
   // number of "female cuts"
   numCuts = ceil(uDiv/2);
-  
-  xTrans = center==false ? (length-(numCuts*2+1)*finger)/2 : -(numCuts*2+1)*finger/2;
+ 
+  echo("insideCuts\nmaxDiv", maxDiv, "\nuDiv", uDiv, "\nnumCuts", numCuts);
+
+  xTrans = center==false ? 0 : -uDiv*finger/2;
   yTrans = center==false ? 0 : -material/2;
   
   translate([xTrans, yTrans]) {
-    for (i=[0:numCuts]) {
+    for (i=[0:numCuts-1]) {
       translate([i*finger*2, 0, 0])
         square([finger, material]);
     }
   }
 }
 
-
-module outsideCuts(length = 100, finger = 10, material = 5, center = false) {
+module outsideCuts(length = 100, finger = 8, material = 5, center = false) {
 
   //maximum possible divisions for this length
   maxDiv = floor(length/finger);
@@ -91,14 +88,15 @@ module outsideCuts(length = 100, finger = 10, material = 5, center = false) {
   uDiv = maxDiv%2==0 ? maxDiv-3 : maxDiv-2;
   
   // number of "female cuts"
-  numCuts = floor(uDiv/2)+1;
+  numCuts = floor(uDiv/2);
 
   //length of cut at either end
   endCut = (length-uDiv*finger)/2;
 
   padding = endCut + finger;
+  echo("outsideCuts\nmaxDiv", maxDiv, "\nuDiv", uDiv, "\nnumCuts", numCuts, "\nendCut", endCut);
 
-  xTrans = center==false ? (length-(numCuts*2+1)*finger)/2 : 
+  xTrans = center==false ? 0 : 
                             -(numCuts*2+1)*finger/2-endCut;
   yTrans = center==false ? 0 : -material/2;
 
