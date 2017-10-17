@@ -18,16 +18,19 @@ finger = 8;
 helpText = true; //[true, false]
 
 module faceXY(center = false, text = true) {
-  
+  //create the YZ face
+
+  //calculate the position of the X and Z displacement 
   xTrans = center==true ? 0 : xDim/2;
   yTrans = center==true ? 0 : yDim/2;
 
+  // calculate the text size and rotation based on the dimensions
   textSize = xDim>=yDim ? xDim*.1 : yDim*.1;
   zRot = xDim>=yDim ? 0 : -90;
 
-  echo(textSize);
-
+  // position the entire piece
   translate([xTrans, yTrans, 0]) {
+    // difference the fingers and text from the basic square
     difference() {
       square([xDim, yDim], center = true);
 
@@ -37,11 +40,11 @@ module faceXY(center = false, text = true) {
       }
 
       for(i=[-1,1]) {
-        //+/- X edges 
+        //+/- X edges fingers
         translate([0, i*yDim/2+i*-material/2, 0])
           outsideCuts(length = xDim, finger = finger, material = material, text = text,
           center = true);
-        //+/- Y edges
+        //+/- Y edges fingers
         translate([i*xDim/2+i*-material/2, 0, 0])
           rotate([0, 0, 90])
           insideCuts(length = yDim, finger = finger, material = material, text = text,
@@ -54,14 +57,19 @@ module faceXY(center = false, text = true) {
 
 
 module faceYZ(center = false, text = true) {
+  //create the YZ face
+
+  //calculate the position of the X and Z displacement 
 
   yTrans = center==true ? 0 : yDim/2;
   zTrans = center==true ? 0 : zDim/2;
 
+  // calculate the text size and rotation based on the dimensions
   textSize = yDim>=zDim ? yDim*.1 : zDim*.1;
   zRot = yDim>=zDim ? 0 : -90;
 
-  translate([yTrans, zTrans]) {
+ // position the entire piece
+ translate([yTrans, zTrans]) {
     difference() {
  
       square([yDim, zDim], center = true);
@@ -88,15 +96,19 @@ module faceYZ(center = false, text = true) {
   }
 }
 
-
 module faceXZ(center = false, text = true) {
-  
+  //create the XZ face
+
+  //calculate the position of the X and Z displacement 
   xTrans = center==true ? 0 : xDim/2;
   zTrans = center==true ? 0 : zDim/2;
 
+
+  // calculate the text size and rotation based on the dimensions
   textSize = xDim>=zDim ? xDim*.1 : zDim*.1;
   zRot = xDim>=zDim ? 0 : -90;
 
+  // position the entire piece
   translate([xTrans, zTrans]) {
     difference() {
       square([xDim, zDim], center = true);
@@ -104,6 +116,18 @@ module faceXZ(center = false, text = true) {
       if (text) {
         rotate([0, 0, zRot])
           text(text = "faceXZ", size = textSize, halign = "center", valign = "center");
+
+      for(i=[-1,1]) {
+        //+/- X edges
+        translate([0, i*zDim/2+i*-material/2])
+          insideCuts(length = xDim, finger = finger, material = material, text = text,
+                    center = true);
+
+        translate([i*xDim/2+i*-material/2, 0]) 
+          rotate([0, 0, 90])
+          insideCuts(length = zDim, finger = finger, material = material, text = text,
+                    center = true);
+      }
 
       }
     }
@@ -118,10 +142,12 @@ module 2Dlayout() {
   translate()
     faceXY(center = true, text = helpText);
   
-  //right side of box (+YZ face)
+  //right and left side of box (+/-YZ face)
+  for (i=[-1,1]) {
   translate([xDim/2+zDim/2+material, 0, 0])
     rotate([0, 0, -90])
     faceYZ(center = true, text = helpText);
+  }
 }
 
 
