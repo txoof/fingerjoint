@@ -1,7 +1,3 @@
-/*
-Finger joint library for creating fingered joints between faces
-
-*/
 /* [Box Dimensions]*/
 //X Dimension
 xDim = 100;
@@ -20,8 +16,11 @@ layout = "2D"; //[2D:"2D for SVG output", 3D:"3D for Visualization"]
 /*[Features]*/
 helpText = true; //[true, false]
 
+
 /*
 #Finger Joint Library
+Created by Aaron Ciuffo aaron . ciuffo at gmail.
+
 Calculate the appropriate number of finger joints for joining laser cut parts 
 given an edge length, material thickness and finger joint length.
 
@@ -50,7 +49,7 @@ outsideCuts();
     *center* (bool)         center the set of fingers with respect to origin
       
 ##module: outsideCuts
-Create a set of finger-joint cuts with an end-cut that takes up extra
+Create a set of finger-joint cuts with an end-cut that takes up the remaining length
   ###parameters:
     *length* (real)         length of edge
     *finger* (real)         length of finger
@@ -59,6 +58,18 @@ Create a set of finger-joint cuts with an end-cut that takes up extra
     *center* (bool)         center the set of fingers with respect to origin
 
 */
+
+
+if (layout=="2D") {
+  2Dlayout(xDim = xDim, yDim = yDim, zDim = zDim, finger = finger, material = material,
+          text = helpText);
+} 
+
+if (layout=="3D") {
+  3Dlayout(xDim = xDim, yDim = yDim, zDim = zDim, finger = finger, material = material,
+          text = helpText);
+}
+
 module insideCuts(length = 100, finger = 8, material = 5, text = true, center = false) {
   // overage to ensure that all cuts are completed 
   o = 0.0001;
@@ -137,7 +148,8 @@ module outsideCuts(length = 100, finger = 8, material = 5, text = false, center 
   }
 
 }
-module faceXY(center = false, text = true) {
+module faceXY(xDim = 100, yDim = 100, finger = 8, material = 5, 
+              center = false, text = true) {
   //create the YZ face
 
   //calculate the position of the X and Z displacement 
@@ -177,7 +189,8 @@ module faceXY(center = false, text = true) {
 }
 
 
-module faceYZ(center = false, text = true) {
+module faceYZ(yDim = 100, zDim = 100, finger = 8, material = 5, 
+              center = false, text = true) {
   //create the YZ face
 
   //calculate the position of the X and Z displacement 
@@ -218,7 +231,8 @@ module faceYZ(center = false, text = true) {
   }
 }
 
-module faceXZ(center = false, text = true) {
+module faceXZ(xDim = 100, zDim = 100, finger = 8, material = 5, 
+              center = false, text = true) {
   //create the XZ face
 
   //calculate the position of the X and Z displacement 
@@ -258,40 +272,43 @@ module faceXZ(center = false, text = true) {
 }
 
 
-module 2Dlayout(xDim = 100, yDim = 100, zDim = 100, finger = 8, material = 5) {
+module 2Dlayout(xDim = 100, yDim = 100, zDim = 100, finger = 8, 
+                material = 5, text = true) {
+
   //bottom of box (-XY face)
   translate()
-    faceXY(center = true, text = helpText);
+    faceXY(xDim = xDim, yDim = yDim, center = true, text = text);
   
   for (i=[-1,1]) {
     //right and left side of box (+/-YZ face)
     translate([i*(xDim/2+zDim/2+material), 0, 0])
-      rotate([0, 0, i*-90])
-      faceYZ(center = true, text = helpText);
+      rotate([0, 0, i*90])
+      faceYZ(zDim = zDim, yDim = yDim,center = true, text = text);
 
     //front and back of box (+/-XZ face)
     translate([0, i*(yDim/2+zDim/2+material)])
       rotate()
-      faceXZ(center = true, text = helpText);
+      faceXZ(xDim = xDim, zDim = zDim, center = true, text = text);
   }
 
   //top of box (+XY face)
   translate([0, yDim+zDim+2*material])
-    faceXY(center = true, text = helpText);
+    faceXY(xDim = xDim, yDim = yDim,center = true, text = text);
 }
 
-module 3Dlayout(xDim = 100, yDim = 100, zDim = 100, finger = 8, material = 5) {
+module 3Dlayout(xDim = 100, yDim = 100, zDim = 100, finger = 8, material = 5, text = true) {
   dim = [xDim, yDim, zDim];
   //bottom of box
   for( i=[-1,1]) {
 
     //rotatation for faces to make the text readable
     r = i<=0 ? 180 : 0;
-    translate([0, 0, i*dim[0]/2+i*-material/2])
+    translate([0, 0, i*dim[2]/2+i*-material/2])
       rotate([r, 0, 0])
       color("royalblue")
         linear_extrude(height = material, center = true) {
-          faceXY(center = true);
+          faceXY(xDim = xDim, yDim = yDim, finger = finger, 
+                material = material, center = true, text = text);
         }
   }
 
@@ -304,10 +321,9 @@ module 3Dlayout(xDim = 100, yDim = 100, zDim = 100, finger = 8, material = 5) {
       translate([0, i*dim[1]/2+i*-material/2, 0])
         rotate([90, 0, r])
         linear_extrude(height = material, center = true) {
-          faceXZ(center = true);
+          faceXZ(xDim = xDim, zDim = zDim, center = true);
       }
     }
-
 
   color("darkorange")
     for(i=[-1,1]) {
@@ -317,14 +333,8 @@ module 3Dlayout(xDim = 100, yDim = 100, zDim = 100, finger = 8, material = 5) {
       translate([i*dim[0]/2+i*-material/2, 0, 0])
         rotate([90, 0, 90+r])
         linear_extrude(height=material, center = true) {
-          faceYZ(center = true);
+          faceYZ(yDim = yDim, zDim = zDim, center = true);
         }
     }
+
 }
-
-
-//2Dlayout();
-
-3Dlayout();
-
-
