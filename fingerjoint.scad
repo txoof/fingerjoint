@@ -2,9 +2,9 @@
 //X Dimension
 xDim = 100;
 //Y Dimension
-yDim = 100;
+yDim = 120;
 //Z Dimension
-zDim = 100;
+zDim = 135;
 //material thickness
 material = 5;
 //finger width
