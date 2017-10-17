@@ -258,7 +258,7 @@ module faceXZ(center = false, text = true) {
 }
 
 
-module 2Dlayout() {
+module 2Dlayout(xDim = 100, yDim = 100, zDim = 100, finger = 8, material = 5) {
   //bottom of box (-XY face)
   translate()
     faceXY(center = true, text = helpText);
@@ -280,7 +280,8 @@ module 2Dlayout() {
     faceXY(center = true, text = helpText);
 }
 
-module 3Dlayout(dim = [100, 100, 100]) {
+module 3Dlayout(xDim = 100, yDim = 100, zDim = 100, finger = 8, material = 5) {
+  dim = [xDim, yDim, zDim];
   //bottom of box
   for( i=[-1,1]) {
 
@@ -311,7 +312,13 @@ module 3Dlayout(dim = [100, 100, 100]) {
   color("darkorange")
     for(i=[-1,1]) {
       //rotatation for faces to make the text readable
-      r = i>=0 ? 180 : 0;
+      r = i<=0 ? 180 : 0;
+
+      translate([i*dim[0]/2+i*-material/2, 0, 0])
+        rotate([90, 0, 90+r])
+        linear_extrude(height=material, center = true) {
+          faceYZ(center = true);
+        }
     }
 }
 
