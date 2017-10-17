@@ -4,153 +4,61 @@ Finger joint library for creating fingered joints between faces
 */
 /* [Box Dimensions]*/
 //X Dimension
-xDim = 400;
+xDim = 100;
 //Y Dimension
-yDim = 150;
+yDim = 100;
 //Z Dimension
-zDim = 130;
+zDim = 100;
 //material thickness
 material = 5;
 //finger width
 finger = 8;
 
+/*[Layout Type]*/
+layout = "2D"; //[2D:"2D for SVG output", 3D:"3D for Visualization"]
+
 /*[Features]*/
 helpText = true; //[true, false]
 
-module faceXY(center = false, text = true) {
-  //create the YZ face
+/*
+#Finger Joint Library
+Calculate the appropriate number of finger joints for joining laser cut parts 
+given an edge length, material thickness and finger joint length.
 
-  //calculate the position of the X and Z displacement 
-  xTrans = center==true ? 0 : xDim/2;
-  yTrans = center==true ? 0 : yDim/2;
+###tl;dr usage:
+use </path/to/fingerjoint.scad>
+insideCuts();
+outsideCuts();
 
-  // calculate the text size and rotation based on the dimensions
-  textSize = xDim>=yDim ? xDim*.1 : yDim*.1;
-  zRot = xDim>=yDim ? 0 : -90;
+###Demo modules:
+*Two Dimensional Layout*
+- SVG EXPORT:  Render (F6), *File* > *Export* > *Export as SVG*
+2DLayout();
 
-  // position the entire piece
-  translate([xTrans, yTrans, 0]) {
-    // difference the fingers and text from the basic square
-    difference() {
-      square([xDim, yDim], center = true);
-
-      if (text) {
-        rotate([0, 0, zRot])
-          text(text = "faceXY", size = textSize, halign = "center", valign = "center");
-      }
-
-      for(i=[-1,1]) {
-        //+/- X edges fingers
-        translate([0, i*yDim/2+i*-material/2, 0])
-          outsideCuts(length = xDim, finger = finger, material = material, text = text,
-          center = true);
-        //+/- Y edges fingers
-        translate([i*xDim/2+i*-material/2, 0, 0])
-          rotate([0, 0, 90])
-          insideCuts(length = yDim, finger = finger, material = material, text = text,
-          center = true);
-      }
-
-    }
-  }
-}
+*Three Dimensional Layout*
+- For visualization only; this will not yield a proper STL for printing
+3DLayout();
 
 
-module faceYZ(center = false, text = true) {
-  //create the YZ face
 
-  //calculate the position of the X and Z displacement 
-
-  yTrans = center==true ? 0 : yDim/2;
-  zTrans = center==true ? 0 : zDim/2;
-
-  // calculate the text size and rotation based on the dimensions
-  textSize = yDim>=zDim ? yDim*.1 : zDim*.1;
-  zRot = yDim>=zDim ? 0 : -90;
-
- // position the entire piece
- translate([yTrans, zTrans]) {
-    difference() {
- 
-      square([yDim, zDim], center = true);
-
-
-      if (text) {
-        rotate([0, 0, zRot])
-          text(text = "faceYZ", size = textSize, halign = "center", valign = "center");
-      }
-
-      for(i=[-1,1]) {
-        //+/- Y edges
-        translate([0, i*zDim/2+i*-material/2])
-          outsideCuts(length = yDim, finger = finger, material = material, text = text, 
-                      center = true);
-
-        //+/- Z edges
-        translate([i*yDim/2+i*-material/2, 0])
-          rotate([0, 0, 90])
-          outsideCuts(length = zDim, finger = finger, material = material, text = text, 
-                      center = true);
-      }
-    }
-  }
-}
-
-module faceXZ(center = false, text = true) {
-  //create the XZ face
-
-  //calculate the position of the X and Z displacement 
-  xTrans = center==true ? 0 : xDim/2;
-  zTrans = center==true ? 0 : zDim/2;
-
-
-  // calculate the text size and rotation based on the dimensions
-  textSize = xDim>=zDim ? xDim*.1 : zDim*.1;
-  zRot = xDim>=zDim ? 0 : -90;
-
-  // position the entire piece
-  translate([xTrans, zTrans]) {
-    difference() {
-      square([xDim, zDim], center = true);
+##module: insideCuts
+  ###parameters:
+    *length* (real)         length of edge
+    *finger* (real)         length of finger
+    *material* (real)       thickness of material
+    *text* (bool)           add help text to indicate cut type (for debugging)
+    *center* (bool)         center the set of fingers with respect to origin
       
-      if (text) {
-        rotate([0, 0, zRot])
-          text(text = "faceXZ", size = textSize, halign = "center", valign = "center");
+##module: outsideCuts
+Create a set of finger-joint cuts with an end-cut that takes up extra
+  ###parameters:
+    *length* (real)         length of edge
+    *finger* (real)         length of finger
+    *material* (real)       thickness of material
+    *text* (bool)           add help text to indicate cut type (for debugging)
+    *center* (bool)         center the set of fingers with respect to origin
 
-      for(i=[-1,1]) {
-        //+/- X edges
-        translate([0, i*zDim/2+i*-material/2])
-          insideCuts(length = xDim, finger = finger, material = material, text = text,
-                    center = true);
-
-        translate([i*xDim/2+i*-material/2, 0]) 
-          rotate([0, 0, 90])
-          insideCuts(length = zDim, finger = finger, material = material, text = text,
-                    center = true);
-      }
-
-      }
-    }
-  }
-}
-
-
-2Dlayout();
-
-module 2Dlayout() {
-  //bottom of box (-XY face)
-  translate()
-    faceXY(center = true, text = helpText);
-  
-  //right and left side of box (+/-YZ face)
-  for (i=[-1,1]) {
-  translate([xDim/2+zDim/2+material, 0, 0])
-    rotate([0, 0, -90])
-    faceYZ(center = true, text = helpText);
-  }
-}
-
-
+*/
 module insideCuts(length = 100, finger = 8, material = 5, text = true, center = false) {
   //maximum possible divisions for this length
   maxDiv = floor(length/finger);
@@ -222,3 +130,159 @@ module outsideCuts(length = 100, finger = 8, material = 5, text = false, center 
   }
 
 }
+module faceXY(center = false, text = true) {
+  //create the YZ face
+
+  //calculate the position of the X and Z displacement 
+  xTrans = center==true ? 0 : xDim/2;
+  yTrans = center==true ? 0 : yDim/2;
+
+  // calculate the text size and rotation based on the dimensions
+  textSize = xDim>=yDim ? xDim*.1 : yDim*.1;
+  zRot = xDim>=yDim ? 0 : -90;
+
+  // position the entire piece
+  translate([xTrans, yTrans, 0]) {
+    color("royalblue")
+    // difference the fingers and text from the basic square
+    difference() {
+      square([xDim, yDim], center = true);
+
+      if (text) {
+        rotate([0, 0, zRot])
+          text(text = "faceXY", size = textSize, halign = "center", valign = "center");
+      }
+
+      for(i=[-1,1]) {
+        //+/- X edges fingers
+        translate([0, i*yDim/2+i*-material/2, 0])
+          outsideCuts(length = xDim, finger = finger, material = material, text = text,
+          center = true);
+        //+/- Y edges fingers
+        translate([i*xDim/2+i*-material/2, 0, 0])
+          rotate([0, 0, 90])
+          insideCuts(length = yDim, finger = finger, material = material, text = text,
+          center = true);
+      }
+
+    }
+  }
+}
+
+
+module faceYZ(center = false, text = true) {
+  //create the YZ face
+
+  //calculate the position of the X and Z displacement 
+
+  yTrans = center==true ? 0 : yDim/2;
+  zTrans = center==true ? 0 : zDim/2;
+
+  // calculate the text size and rotation based on the dimensions
+  textSize = yDim>=zDim ? yDim*.1 : zDim*.1;
+  zRot = yDim>=zDim ? 0 : -90;
+
+ // position the entire piece
+ translate([yTrans, zTrans]) {
+    color("darkorange")
+    difference() {
+ 
+      square([yDim, zDim], center = true);
+
+
+      if (text) {
+        rotate([0, 0, zRot])
+          text(text = "faceYZ", size = textSize, halign = "center", valign = "center");
+      }
+
+      for(i=[-1,1]) {
+        //+/- Y edges
+        translate([0, i*zDim/2+i*-material/2])
+          outsideCuts(length = yDim, finger = finger, material = material, text = text, 
+                      center = true);
+
+        //+/- Z edges
+        translate([i*yDim/2+i*-material/2, 0])
+          rotate([0, 0, 90])
+          outsideCuts(length = zDim, finger = finger, material = material, text = text, 
+                      center = true);
+      }
+    }
+  }
+}
+
+module faceXZ(center = false, text = true) {
+  //create the XZ face
+
+  //calculate the position of the X and Z displacement 
+  xTrans = center==true ? 0 : xDim/2;
+  zTrans = center==true ? 0 : zDim/2;
+
+
+  // calculate the text size and rotation based on the dimensions
+  textSize = xDim>=zDim ? xDim*.1 : zDim*.1;
+  zRot = xDim>=zDim ? 0 : -90;
+
+  // position the entire piece
+  translate([xTrans, zTrans]) {
+    color("firebrick")
+    difference() {
+      square([xDim, zDim], center = true);
+      
+      if (text) {
+        rotate([0, 0, zRot])
+          text(text = "faceXZ", size = textSize, halign = "center", valign = "center");
+
+      for(i=[-1,1]) {
+        //+/- X edges
+        translate([0, i*zDim/2+i*-material/2])
+          insideCuts(length = xDim, finger = finger, material = material, text = text,
+                    center = true);
+
+        translate([i*xDim/2+i*-material/2, 0]) 
+          rotate([0, 0, 90])
+          insideCuts(length = zDim, finger = finger, material = material, text = text,
+                    center = true);
+      }
+
+      }
+    }
+  }
+}
+
+
+module 2Dlayout() {
+  //bottom of box (-XY face)
+  translate()
+    faceXY(center = true, text = helpText);
+  
+  for (i=[-1,1]) {
+    //right and left side of box (+/-YZ face)
+    translate([i*(xDim/2+zDim/2+material), 0, 0])
+      rotate([0, 0, i*-90])
+      faceYZ(center = true, text = helpText);
+
+    //front and back of box (+/-XZ face)
+    translate([0, i*(yDim/2+zDim/2+material)])
+      rotate()
+      faceXZ(center = true, text = helpText);
+  }
+
+  //top of box (+XY face)
+  translate([0, yDim+zDim+2*material])
+    faceXY(center = true, text = helpText);
+}
+
+module 3Dlayout() {
+  linear_extrude(height = material, center = true) {
+    rotate([180, 0, 0])
+    faceXY(center = true);
+  }
+}
+
+
+2Dlayout();
+
+//3Dlayout();
+
+
