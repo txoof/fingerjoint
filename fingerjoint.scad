@@ -19,6 +19,7 @@ layout = "3D"; //[2D:2D for SVG output, 3D:3D for Visualization]
 //wierd bug in thingiverse customizer won't deal with boolean values so there's this hack
 helpText = addText==1 ? true : false;
 
+font = "Allerta Stencil";
 
 /*
 #Finger Joint Library
@@ -148,7 +149,7 @@ module insideCuts(length = 100, finger = 8, material = 5, text = true, center = 
 
   if (text) {
     translate([0, yTrans+material*2])
-      text(text=debugText, size = length*0.05, halign = "center");
+      text(text=debugText, size = length*0.05, halign = "center", font = font);
     echo(debugText);
   }
 
@@ -197,7 +198,7 @@ module outsideCuts(length = 100, finger = 8, material = 5, text = false, center 
 
   if (text) {
     translate([length/2+xTrans, yTrans+material*2])
-    text(text=debugText, size = length*.05, halign = "center");
+    text(text=debugText, size = length*.05, halign = "center", font = font);
     echo(debugText);
   }
 
@@ -225,7 +226,8 @@ module faceXY(xDim = 100, yDim = 100, finger = 8, material = 5,
 
       if (text) {
         rotate([0, 0, zRot])
-          text(text = "faceXY", size = textSize, halign = "center", valign = "center");
+          text(text = "faceXY", size = textSize, halign = "center", 
+              valign = "center", font = font);
       }
 
       for(i=[-1,1]) {
@@ -268,7 +270,8 @@ module faceYZ(yDim = 100, zDim = 100, finger = 8, material = 5,
 
       if (text) {
         rotate([0, 0, zRot])
-          text(text = "faceYZ", size = textSize, halign = "center", valign = "center");
+          text(text = "faceYZ", size = textSize, halign = "center", 
+              valign = "center", font = font);
       }
 
       for(i=[-1,1]) {
@@ -308,7 +311,8 @@ module faceXZ(xDim = 100, zDim = 100, finger = 8, material = 5,
       
       if (text) {
         rotate([0, 0, zRot])
-          text(text = "faceXZ", size = textSize, halign = "center", valign = "center");
+          text(text = "faceXZ", size = textSize, halign = "center", 
+            valign = "center", font = font);
       }
 
       for(i=[-1,1]) {
