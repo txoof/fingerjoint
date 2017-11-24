@@ -109,6 +109,104 @@ Create a 3D layout of demonstration box
 */
 
 
+help_fingerjoint();
+
+module help_fingerjoint(modName = false) {
+//for more information see https://github.com/txoof/module_help
+//created by Aaron Ciuffo
+  //edit content below this line
+
+  //add library name here
+  LibraryName = "fingerjoint";
+
+  //enter module and function information here
+  modules =
+            [["outsideCut",
+              "module: outsideCuts(length = <real>, finger = <real>, material = <real>, text = <boolean>, center = <boolean>)",
+              "returns: none (module)",
+              "Description: make finger joint cuts of 'finger' width along length with two cuts at end that are larger than the finger to account for modulo remainders",
+              "Each outsideCuts() edge must be paired with an insideCuts() edge for assembly",
+              "Parameters:",
+              "     length      <real>      length of edge to be cut",
+              "     finger      <real>      width of positive and negative fingers",
+              "     material    <real>      thickness of material to be used",
+              "     text        <boolean>   include debug text (useful for trouble shooting)",
+              "     center      <boolean>   center the cuts at the origin"],
+             ["insideCuts",
+              "module: outsideCuts(length = <real>, finger = <real>, material = <real>, text = <boolean>, center = <boolean>)",
+              "returns: none (module)",
+              "Description: make finger joint cuts of 'finger' width along length stopping before the end to account for modulo remainders",
+              "Each outsideCuts() edge must be paired with an insideCuts() edge for assembly",
+              "Parameters:",
+              "     length      <real>      length of edge to be cut",
+              "     finger      <real>      width of positive and negative fingers",
+              "     material    <real>      thickness of material to be used",
+              "     text        <boolean>   include debug text (useful for trouble shooting)",
+              "     center      <boolean>   center the cuts at the origin"],
+
+
+             ["2Dlayout",
+              "module: 2Dlayout(xDim = <real>, yDim = <real>, zDim = <real>, finger = <real>, material = <real>, text = <boolean>)",
+              "returns: none (module)",
+              "Description: Demonstration module to create a 2D laser-cuttable box",
+              "This module is meant to be used as a model reference",
+              "Parameters: ",
+              "     xDim        <real>      X dimension of box",
+              "     yDim        <real>      Y dimension of box",
+              "     zDim        <real>      Z dimension of box",
+              "     finger      <real>      width of finger joints",
+              "     material    <real>      thickness of material to be used",
+              "     text        <boolean>   include debugging text for reference"
+              ],
+             ["3Dlayout",
+              "module: 3Dlayout(xDim = <real>, yDim = <real>, zDim = <real>, finger = <real>, material = <real>, text = <boolean>)",
+              "returns: none (module)",
+              "Description: Demonstration module to create a 3D model of a laser-cuttable box",
+              "This module is meant to be used as a model reference",
+              "Parameters: ",
+              "     xDim        <real>      X dimension of box",
+              "     yDim        <real>      Y dimension of box",
+              "     zDim        <real>      Z dimension of box",
+              "     finger      <real>      width of finger joints",
+              "     material    <real>      thickness of material to be used",
+              "     text        <boolean>   include debugging text for reference"
+              ],
+
+            ];
+  //End editable content
+  //DO NOT EDIT BELOW THIS POINT
+
+  //convert string into a vector to make search work properly
+  modVect = [modName];
+  //use the vectorized string to search the modules vector
+  index = search(modVect, modules)[0];
+
+  //chcek if a name was passed
+  if (modName==false || len(modules[index])==undef) {
+      if (len(modules[index])==undef && modName != false) {
+        echo(str("*****Module: ", modName, " not found*****"));
+        echo("");
+      }
+
+      echo("Available Help Topics in this Library:");
+      for (i=[0:len(modules)-1]) {
+        echo(modules[i][0]);
+      }
+      echo(str("USE: help_",LibraryName,"(\"moduleName\")  "));
+      //assert(modName);
+    } else {
+      //return the first matching entry
+      //-possibly modify this to return all entries - allows partial match
+
+      echo(str("Help for module or function: ", modName));
+      //basic = modules[index[0]][1];
+      //echo(basic);
+      for (text=[1:len(modules[index])-1]) {
+        echo(modules[index][text]);
+      }
+    }
+}
+
 if (layout=="2D") {
   2Dlayout(xDim = xDim, yDim = yDim, zDim = zDim, finger = finger, material = material,
           text = helpText);
