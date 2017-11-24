@@ -112,8 +112,11 @@ Create a 3D layout of demonstration box
 
 help_fingerjoint();
 
+//uncomment for fun animation
+$vpr = [$t * -360, $t * 360, $t * -360];
 
 
+//demonstration modules
 if (layout=="2D") {
   2Dlayout(xDim = xDim, yDim = yDim, zDim = zDim, finger = finger, material = material,
           text = helpText);
@@ -123,6 +126,8 @@ if (layout=="3D") {
   3Dlayout(xDim = xDim, yDim = yDim, zDim = zDim, finger = finger, material = material,
           text = helpText);
 }
+
+
 
 module insideCuts(length = 100, finger = 8, material = 5, text = true, center = false) {
   // overage to ensure that all cuts are completed 
@@ -428,7 +433,7 @@ module help_fingerjoint(modName = false) {
               "Each outsideCuts() edge must be paired with an insideCuts() edge for assembly",
               "Parameters:",
               "     length      <real>      length of edge to be cut",
-              "     finger      <real>      width of positive and negative fingers",
+              "     finger      <real>      0 < finger < length/3 width of positive and negative fingers",
               "     material    <real>      thickness of material to be used",
               "     text        <boolean>   include debug text (useful for trouble shooting)",
               "     center      <boolean>   center the cuts at the origin"],
@@ -439,7 +444,7 @@ module help_fingerjoint(modName = false) {
               "Each outsideCuts() edge must be paired with an insideCuts() edge for assembly",
               "Parameters:",
               "     length      <real>      length of edge to be cut",
-              "     finger      <real>      width of positive and negative fingers",
+              "     finger      <real>      0 < finger < length/3 width of positive and negative fingers",
               "     material    <real>      thickness of material to be used",
               "     text        <boolean>   include debug text (useful for trouble shooting)",
               "     center      <boolean>   center the cuts at the origin"],
@@ -490,7 +495,7 @@ module help_fingerjoint(modName = false) {
 
       echo("Available Help Topics in this Library:");
       for (i=[0:len(modules)-1]) {
-        echo(modules[i][0]);
+        echo(str("     ", modules[i][0]));
       }
       echo(str("USE: help_",LibraryName,"(\"moduleName\")  "));
       //assert(modName);
@@ -505,4 +510,4 @@ module help_fingerjoint(modName = false) {
         echo(modules[index][text]);
       }
     }
-}
+} //end help
